@@ -222,7 +222,8 @@ class Payfast extends NonmerchantGateway
         }
 
         // Generate signature
-        $signature = $this->generateSignature($fields);
+        $passphrase = !empty($this->meta['passphrase']) ? $this->meta['passphrase'] : null;
+        $signature = $this->generateSignature($fields, $passphrase);
         $fields['signature'] = $signature;
 
         // Set post to URL
@@ -285,7 +286,8 @@ class Payfast extends NonmerchantGateway
         }
 
         // Validate signature
-        if (!$this->validateSignature($post, $data_string)) {
+        $passphrase = !empty($this->meta['passphrase']) ? $this->meta['passphrase'] : null;
+        if (!$this->validateSignature($post, $data_string, $passphrase)) {
             $success = false;
         }
 

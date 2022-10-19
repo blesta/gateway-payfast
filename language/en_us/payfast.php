@@ -15,6 +15,7 @@ $lang['Payfast.!error.merchant_key.valid'] = 'Merchant Key invalid.';
 // Settings
 $lang['Payfast.meta.merchant_id'] = 'Merchant ID';
 $lang['Payfast.meta.merchant_key'] = 'Merchant Key';
+$lang['Payfast.meta.passphrase'] = 'Passphrase';
 $lang['Payfast.meta.sandbox'] = 'Sandbox';
 
 
