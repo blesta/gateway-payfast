@@ -84,19 +84,21 @@ class Payfast extends NonmerchantGateway
         $rules = [
             'merchant_id' => [
                 'valid' => [
-                    'rule' => true,
+                    'rule' => 'isEmpty',
+                    'negate' => true,
                     'message' => Language::_('Payfast.!error.merchant_id.valid', true)
                 ]
             ],
             'merchant_key' => [
                 'valid' => [
-                    'rule' => true,
+                    'rule' => 'isEmpty',
+                    'negate' => true,
                     'message' => Language::_('Payfast.!error.merchant_key.valid', true)
                 ]
             ],
             'sandbox' => [
                 'valid' => [
-                    'rule' => true,
+                    'rule' => ['in_array', ['true', 'false']],
                     'message' => Language::_('Payfast.!error.sandbox.valid', true)
                 ]
             ]

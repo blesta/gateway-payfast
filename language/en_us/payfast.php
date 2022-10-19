@@ -10,6 +10,7 @@ $lang['Payfast.description'] = 'Experience fast and secure online payments in So
 // Errors
 $lang['Payfast.!error.merchant_id.valid'] = 'Merchant ID invalid.';
 $lang['Payfast.!error.merchant_key.valid'] = 'Merchant Key invalid.';
+$lang['Payfast.!error.sandbox.valid'] = 'Sandbox value invalid.';
 
 
 // Settings
