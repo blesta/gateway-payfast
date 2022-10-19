@@ -16,7 +16,7 @@ your Blesta installation path.
     For example:
 
     ```
-    /var/www/html/blesta/plugins/payfast/
+    /var/www/html/blesta/gateways/nonmerchant/payfast/
     ```
 
 3. Log in to your admin Blesta account and navigate to
