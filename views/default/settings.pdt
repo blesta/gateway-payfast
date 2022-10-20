@@ -14,6 +14,12 @@
         </li>
         <li>
             <?php
+            $this->Form->label($this->_('Payfast.meta.passphrase', true), 'passphrase');
+            $this->Form->fieldText('passphrase', ($meta['passphrase'] ?? null), ['id' => 'passphrase', 'class' => 'block']);
+            ?>
+        </li>
+        <li>
+            <?php
             $this->Form->fieldCheckbox('sandbox', 'true', (($meta['sandbox'] ?? 'false') == 'true'), ['id' => 'sandbox']);
             $this->Form->label($this->_('Payfast.meta.sandbox', true), 'sandbox', ['class' => 'inline']);
             ?>
