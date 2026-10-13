@@ -261,13 +261,11 @@ class Payfast extends NonmerchantGateway
         $status = 'error';
         $success = true;
 
-        // Encode posted data to a string
+        // Encode all posted data to a string, so every field used below is verified
         $data_string = '';
         foreach ($post as $key => $value) {
             if ($key !== 'signature') {
                 $data_string .= $key . '=' . urlencode($value) . '&';
-            } else {
-                break;
             }
         }
         $data_string = rtrim($data_string, '&');
@@ -449,7 +447,7 @@ class Payfast extends NonmerchantGateway
         }
 
         if (empty($meta)) {
-            return true;
+            return false;
         }
 
         // Send request
