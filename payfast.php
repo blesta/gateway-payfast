@@ -19,16 +19,6 @@ class Payfast extends NonmerchantGateway
     private $meta;
 
     /**
-     * @var array An array containing the valid hostnames from PayFast
-     */
-    private $valid_hostnames = [
-        'www.payfast.co.za',
-        'w1w.payfast.co.za',
-        'w2w.payfast.co.za',
-        'sandbox.payfast.co.za'
-    ];
-
-    /**
      * Construct a new merchant gateway
      */
     public function __construct()
@@ -218,6 +208,11 @@ class Payfast extends NonmerchantGateway
             'item_name' => substr($options['description'] ?? null, 0, 90)
         ];
 
+        // Set the client ID in a signed field
+        if (!empty($contact_info['client_id'])) {
+            $fields['custom_int1'] = $contact_info['client_id'];
+        }
+
         // Set all invoices to pay
         if (isset($invoice_amounts) && is_array($invoice_amounts)) {
             $fields['custom_str1'] = $this->serializeInvoices($invoice_amounts);
@@ -266,12 +261,6 @@ class Payfast extends NonmerchantGateway
         $status = 'error';
         $success = true;
 
-        // Validate the request came from a trusted domain
-        $requestor = parse_url($_SERVER['HTTP_REFERER'])['host'];
-        if (!in_array($requestor, $this->valid_hostnames)) {
-            $success = false;
-        }
-
         // Encode posted data to a string
         $data_string = '';
         foreach ($post as $key => $value) {
@@ -281,6 +270,7 @@ class Payfast extends NonmerchantGateway
                 break;
             }
         }
+        $data_string = rtrim($data_string, '&');
 
         // Validate request with the gateway
         if (!$this->validateRequest($data_string, ($this->meta ?? []))) {
@@ -296,7 +286,6 @@ class Payfast extends NonmerchantGateway
         // Set status
         if (($post['payment_status'] ?? 'ERROR') == 'COMPLETE') {
             $status = 'approved';
-            $success = true;
         }
 
         // Log the response
@@ -309,7 +298,8 @@ class Payfast extends NonmerchantGateway
         }
 
         return [
-            'client_id' => ($get['client_id'] ?? null),
+            // The signed client ID, the notify URL is only used for payments started before it was signed
+            'client_id' => (!empty($post['custom_int1']) ? $post['custom_int1'] : ($get['client_id'] ?? null)),
             'amount' => ($post['amount_gross'] ?? null),
             'currency' => 'ZAR',
             'invoices' => $this->deSerializeInvoices($post['custom_str1'] ?? null),
@@ -440,7 +430,7 @@ class Payfast extends NonmerchantGateway
 
         $signature = md5($data_string);
 
-        return ($data['signature'] === $signature);
+        return hash_equals($signature, (string) ($data['signature'] ?? ''));
     }
 
     /**
