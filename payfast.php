@@ -270,6 +270,13 @@ class Payfast extends NonmerchantGateway
         }
         $data_string = rtrim($data_string, '&');
 
+        // Validate the ITN is for this merchant. PayFast confirms an ITN is genuine, not that it was
+        // sent to this merchant, so without a passphrase a payment made to another merchant would pass
+        $merchant_id = trim((string) ($this->meta['merchant_id'] ?? ''));
+        if ($merchant_id === '' || ($post['merchant_id'] ?? null) !== $merchant_id) {
+            $success = false;
+        }
+
         // Validate request with the gateway
         if (!$this->validateRequest($data_string, ($this->meta ?? []))) {
             $success = false;
